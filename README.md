@@ -23,6 +23,8 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 DiscussWeb.PageView.render("index.html")
 mix phx.gen.schema User users name:string email:string bio:string number_of_pets:integer
+mix phx.server
+mix phx.routes
 mix ecto.gen.migration add_topics
 mix ecto.migrate
 
