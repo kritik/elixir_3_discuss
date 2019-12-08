@@ -1,6 +1,12 @@
 defmodule DiscussWeb.TopicController do
   use DiscussWeb, :controller
   alias DiscussWeb.Topic # allows to call just %Topic{}
+  alias Discuss.Repo
+  
+  def index(conn, _params) do
+    topics = Repo.all(Topic)
+    render conn, "index.html", topics: topics
+  end
   
   def new(conn, params) do
     # IO.puts("------")
@@ -13,13 +19,40 @@ defmodule DiscussWeb.TopicController do
   end
   
   def create(conn, %{"topic" => params}) do
-    IO.puts("------")
-    IO.inspect(params)
-    IO.puts("------")
-    
     changeset = Topic.changeset(%Topic{}, params)
-    IO.inspect(changeset)
-    render(conn, "new.html", %{changeset: changeset})
+    case Repo.insert(changeset) do
+      {:ok, _post} -> 
+        conn
+        |> put_flash(:info, "Topic created")
+        |> redirect(to: Routes.topic_path(conn, :index))
+      {:error, changeset}-> 
+        render(conn, "new.html", %{changeset: changeset})
+    end
+  end
+  
+  def edit(conn, %{"id"=>id}) do
+    topic = Repo.get(Topic, id)
+    changeset = Topic.changeset(topic)
+    render(conn, "edit.html", changeset: changeset, topic: topic)
+  end
+  
+  def update(conn,  %{"id"=>id, "topic"=> params}) do
+    changeset = Topic.changeset(Repo.get(Topic, id), params)
+    case Repo.update(changeset) do
+      {:ok, _post} -> 
+        conn
+        |> put_flash(:info, "Topic updated")
+        |> redirect(to: Routes.topic_path(conn, :index))
+      {:error, changeset}-> 
+        render(conn, "edit.html", %{changeset: changeset, topic: %Topic{id: id}})
+    end
+  end
+  
+  def delete(conn, %{"id"=>id}) do
+    Repo.delete!(%Topic{id: id|>String.to_integer})
+    conn
+    |> put_flash(:info, "Topic deleted")
+    |>redirect(to: Routes.topic_path(conn, :index))
   end
 end
   
