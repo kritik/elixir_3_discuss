@@ -25,6 +25,13 @@ defmodule DiscussWeb.Router do
     # get "/topics", TopicController, :index
     resources "/", TopicController # omitting topics from urls
   end
+  
+  scope "/auth", DiscussWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+  end
 
   # Other scopes may use custom stacks.
   # scope "/api", DiscussWeb do
