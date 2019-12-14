@@ -37,3 +37,5 @@ use DiscussWeb, :controller - import all actions from function in DiscussWeb
 struct=%DiscussWeb.Topic{}
 params=%{title: "Great JS"}
 DiscussWeb.Topic.changeset(struct, params)
+conn|>halt() - stops rendering of page
+plug DiscussWeb.Plugs.RequireAuth when action in [:new, :create, :edit,:update, :delete] - runs plugs only when needed

@@ -9,7 +9,7 @@ defmodule DiscussWeb.AuthController do
   #   ...
   #  end
   
-  def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
+  def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
     user_params = %{
       token: auth.credentials.token, 
       email: auth.info.email,
@@ -17,8 +17,14 @@ defmodule DiscussWeb.AuthController do
     }
     changeset = User.changeset(%User{}, user_params)
     signin(conn, changeset)
-    # conn.assigns.ueberauth_auth.provider
     # require IEx;IEx.pry
+  end
+  
+  def signout(conn, _params) do
+    conn
+    # |> delete_session(:user_id)
+    |> configure_session(drop: true)
+    |> redirect(to: Routes.topic_path(conn, :index))
   end
   
   defp signin(conn, cs) do
