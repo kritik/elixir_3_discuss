@@ -1,3 +1,17 @@
-<%= @topic.title %>
+<h5><%= @topic.title %></h5>
+<!-- <button>Ping</button> -->
 
-<button>Ping</button>
+<div class="input-field">
+  <textarea class="materializr-textarea"></textarea>
+  <button class="btn">Add Comment</button>
+
+  <ul class="collection">
+    
+  </ul>
+</div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    window.createSocket(<%= @topic.id %> );
+  })
+</script>
