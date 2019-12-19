@@ -69,20 +69,30 @@ const createSocket = (topicId)=>{
 
       channel.push('comment:add', {content: content})
     })
+  channel.on(`comments:${topicId}:new`,renderComment)
 }
 // document.querySelector('button').addEventListener('click', function(){
 //   channel.push('comment:hello', { hi: 'there!' })
 // });
 
 function renderComments(comments){
-  const renderedComments = comments.map(comment => {
-    return `
-      <li class="collection-item">
-        ${comment.content}
-      </li>
-    `
+  const lis = comments.map(comment => {
+    return commentTemplate(comment)
   });
-  document.querySelector('.collection').innerHTML = renderedComments.join('')
+  document.querySelector('.collection').innerHTML = lis.join('')
+}
+
+function renderComment(evt){
+  const li = commentTemplate(evt.comment);
+  document.querySelector('.collection').innerHTML += li
+}
+
+function commentTemplate(comment){
+  return `
+    <li class="collection-item">
+      ${comment.content}
+    </li>
+  `
 }
 
 

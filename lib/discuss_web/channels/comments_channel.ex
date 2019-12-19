@@ -20,12 +20,16 @@ defmodule DiscussWeb.CommentsChannel do
     IO.puts(name)
     IO.inspect(content)
     topic = socket.assigns.topic
+    user_id   = socket.assigns.user_id
     changeset = topic
-      |> Ecto.build_assoc(:comments)
+      |> Ecto.build_assoc(:comments, user_id: user_id)
       |> Comment.changeset(%{content: content})
 
     case Repo.insert(changeset) do
       {:ok, comment} ->
+        broadcast!(socket, "comments:#{topic.id}:new",
+          %{comment: comment}
+        )
         {:reply, :ok, socket}
       {:error, _reason} ->
         {:reply, {:error, %{errors: changeset}}, socket}

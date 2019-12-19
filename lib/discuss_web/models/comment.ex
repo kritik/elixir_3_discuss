@@ -15,6 +15,6 @@ defmodule DiscussWeb.Comment do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:content, :topic_id, :user_id])
-    |> validate_required([:content, :topic_id])
+    |> validate_required([:content, :topic_id, :user_id])
   end
 end
