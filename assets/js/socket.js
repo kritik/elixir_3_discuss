@@ -85,12 +85,16 @@ function renderComments(comments){
 function renderComment(evt){
   const li = commentTemplate(evt.comment);
   document.querySelector('.collection').innerHTML += li
+  document.querySelector('textarea').value = ""
 }
 
 function commentTemplate(comment){
   return `
     <li class="collection-item">
       ${comment.content}
+      <div class="secondary-content">
+        ${comment.user ? comment.user.email : "Anonymous"}
+      </div>
     </li>
   `
 }

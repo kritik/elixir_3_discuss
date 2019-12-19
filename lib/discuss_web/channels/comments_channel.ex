@@ -10,7 +10,7 @@ defmodule DiscussWeb.CommentsChannel do
     topic_id = String.to_integer(topic_id)
     topic = Topic
       |> Repo.get(topic_id)
-      |> Repo.preload(:comments)
+      |> Repo.preload(comments: [:user])
 
     {:ok, %{comments: topic.comments}, assign(socket, :topic, topic)}
   end
@@ -27,6 +27,7 @@ defmodule DiscussWeb.CommentsChannel do
 
     case Repo.insert(changeset) do
       {:ok, comment} ->
+        comment = Repo.preload(comment, :user)
         broadcast!(socket, "comments:#{topic.id}:new",
           %{comment: comment}
         )
